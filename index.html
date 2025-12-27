@@ -1,45 +1,233 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>WhatsApp Clone</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Web Clone</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
 </head>
-<body>
-
-<button id="darkBtn" onclick="toggleDark()">🌙</button>
-
-<div id="login">
-  <h2>Login</h2>
-  <input id="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Password">
-  <button onclick="login()">Login</button>
-  <button onclick="register()">Register</button>
-</div>
-
-<div id="app" style="display:none">
-  <div id="sidebar">
-    <input id="search" placeholder="Search user">
-    <div id="userList"></div>
-  </div>
-
-  <div id="chat">
-    <div id="top">
-      <span id="chatWith">Select user</span>
-      <span id="typing"></span>
+<body class="light-mode">
+    <!-- Auth Screen -->
+    <div id="authScreen" class="auth-screen">
+        <div class="auth-container">
+            <div class="auth-header">
+                <i class="fab fa-whatsapp fa-3x"></i>
+                <h1>WhatsApp Web</h1>
+                <p>Sign in to continue</p>
+            </div>
+            
+            <div class="auth-tabs">
+                <button id="loginTab" class="auth-tab active">Login</button>
+                <button id="registerTab" class="auth-tab">Register</button>
+            </div>
+            
+            <form id="loginForm" class="auth-form active">
+                <div class="form-group">
+                    <input type="email" id="loginEmail" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="loginPassword" placeholder="Password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Sign In</button>
+            </form>
+            
+            <form id="registerForm" class="auth-form">
+                <div class="form-group">
+                    <input type="text" id="registerName" placeholder="Full Name" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="registerEmail" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="registerPassword" placeholder="Password (min 6 chars)" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Create Account</button>
+            </form>
+            
+            <div class="auth-footer">
+                <p class="error-message" id="authError"></p>
+                <div class="theme-toggle">
+                    <span>Dark Mode</span>
+                    <label class="switch">
+                        <input type="checkbox" id="darkModeToggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div id="messages"></div>
+    <!-- Main App (hidden initially) -->
+    <div id="appContainer" class="app-container hidden">
+        <!-- Left Sidebar -->
+        <div class="sidebar">
+            <!-- Profile Header -->
+            <div class="sidebar-header">
+                <div class="profile-info">
+                    <div class="avatar" id="currentUserAvatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="profile-details">
+                        <h3 id="currentUserName"></h3>
+                        <p id="currentUserStatus">Online</p>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="icon-btn" id="themeToggleBtn" title="Toggle Dark Mode">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button class="icon-btn" id="logoutBtn" title="Logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
 
-    <div id="inputBar">
-      <input id="msg" placeholder="Message">
-      <button onclick="sendMsg()">Send</button>
+            <!-- Status Section -->
+            <div class="status-section">
+                <div class="status-header">
+                    <h4>Status</h4>
+                    <button class="icon-btn small" id="newStatusBtn" title="New Status">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                <div class="status-list" id="statusList">
+                    <!-- Status items will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Search -->
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="userSearch" placeholder="Search users...">
+            </div>
+
+            <!-- Users List -->
+            <div class="users-list" id="usersList">
+                <!-- Users will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Chat Area -->
+        <div class="chat-area">
+            <!-- Chat Header -->
+            <div class="chat-header" id="chatHeader">
+                <div class="chat-partner-info">
+                    <div class="avatar" id="chatPartnerAvatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div>
+                        <h3 id="chatPartnerName">Select a chat</h3>
+                        <p id="chatPartnerStatus">Click on a user to start chatting</p>
+                    </div>
+                </div>
+                <div class="chat-actions" id="chatActions">
+                    <button class="icon-btn" id="callBtn" title="Start Call" disabled>
+                        <i class="fas fa-phone"></i>
+                    </button>
+                    <button class="icon-btn" id="videoCallBtn" title="Start Video Call" disabled>
+                        <i class="fas fa-video"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Messages Container -->
+            <div class="messages-container" id="messagesContainer">
+                <!-- Messages will be loaded here -->
+                <div class="empty-chat" id="emptyChat">
+                    <i class="fab fa-whatsapp fa-4x"></i>
+                    <h2>Welcome to WhatsApp Web</h2>
+                    <p>Select a contact to start messaging</p>
+                </div>
+            </div>
+
+            <!-- Typing Indicator -->
+            <div class="typing-indicator hidden" id="typingIndicator">
+                <div class="typing-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <span>typing...</span>
+            </div>
+
+            <!-- Message Input -->
+            <div class="message-input-container">
+                <button class="icon-btn" id="attachBtn" title="Attach File">
+                    <i class="fas fa-paperclip"></i>
+                </button>
+                <input type="text" id="messageInput" placeholder="Type a message..." disabled>
+                <button class="icon-btn" id="sendBtn" disabled>
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Call Interface (hidden initially) -->
+        <div id="callInterface" class="call-interface hidden">
+            <div class="call-container">
+                <div class="remote-video-container">
+                    <video id="remoteVideo" autoplay playsinline></video>
+                    <div class="remote-user-info">
+                        <h3 id="remoteUserName"></h3>
+                        <p id="callStatus">Calling...</p>
+                    </div>
+                </div>
+                <div class="local-video-container">
+                    <video id="localVideo" autoplay playsinline muted></video>
+                </div>
+                <div class="call-controls">
+                    <button class="call-btn" id="muteBtn" title="Mute">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                    <button class="call-btn" id="videoToggleBtn" title="Toggle Video">
+                        <i class="fas fa-video"></i>
+                    </button>
+                    <button class="call-btn end-call" id="endCallBtn" title="End Call">
+                        <i class="fas fa-phone-slash"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Modal (hidden initially) -->
+        <div id="statusModal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Create New Status</h3>
+                    <button class="close-btn" id="closeStatusModal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="status-type-selector">
+                        <button class="status-type-btn active" data-type="text">
+                            <i class="fas fa-font"></i>
+                            <span>Text Status</span>
+                        </button>
+                        <button class="status-type-btn" data-type="image">
+                            <i class="fas fa-image"></i>
+                            <span>Image Status</span>
+                        </button>
+                    </div>
+                    <div class="status-input-container">
+                        <textarea id="textStatusInput" placeholder="What's on your mind?" rows="4"></textarea>
+                        <input type="file" id="imageStatusInput" accept="image/*" class="hidden">
+                        <div id="imagePreview" class="image-preview hidden">
+                            <img id="previewImage" src="" alt="Preview">
+                            <button class="remove-image-btn" id="removeImageBtn">&times;</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" id="cancelStatusBtn">Cancel</button>
+                    <button class="btn btn-primary" id="postStatusBtn">Post Status</button>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
 
-<!-- AES library -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-<script type="module" src="./app.js"></script>
+    <!-- Firebase SDK -->
+    <script type="module" src="firebase-config.js"></script>
+    <script type="module" src="app.js"></script>
 </body>
 </html>
