@@ -2,27 +2,42 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>WhatsApp Advanced</title>
+<title>WhatsApp Clone</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+<!-- LOGIN -->
 <div id="login">
   <h2>Login</h2>
   <input id="email" placeholder="Email">
   <input id="password" type="password">
-  <br><br>
   <button onclick="login()">Login</button>
   <button onclick="register()">Register</button>
 </div>
 
+<!-- CHAT -->
 <div id="chat" style="display:none">
+  <div id="top">
+    <span id="statusText">🟢 Online</span>
+    <button onclick="startCall()">📞</button>
+  </div>
+
   <div id="messages"></div>
-  <input id="msg">
-  <button onclick="sendMsg()">Send</button>
+
+  <div id="typing"></div>
+
+  <div id="inputBar">
+    <input id="msg" placeholder="Message">
+    <input type="file" id="img">
+    <button onclick="sendMsg()">Send</button>
+  </div>
 </div>
 
-<!-- ❗ ONLY THIS SCRIPT -->
-<script type="module" src="./app.js"></script>
+<!-- CALL -->
+<video id="localVideo" autoplay muted></video>
+<video id="remoteVideo" autoplay></video>
 
+<script type="module" src="app.js"></script>
 </body>
 </html>
