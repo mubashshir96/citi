@@ -130,7 +130,22 @@ window.sendMsg = () => {
   }
   msg.value="";
   img.value="";
+};window.sendMsg = () => {
+  if (!currentChatId) {
+    alert("Select a user first");
+    return;
+  }
+
+  push(ref(db, "chats/" + currentChatId + "/messages"), {
+    text: encrypt(msg.value),
+    sender: auth.currentUser.uid,
+    seen: false,
+    time: Date.now()
+  });
+
+  msg.value = "";
 };
+
 
 /* ---------- TYPING ---------- */
 msg.oninput = () => {
