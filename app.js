@@ -1,4 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+import { onValue } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword }
 from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 import { getDatabase, ref, push, onChildAdded, set, remove, onDisconnect }
@@ -33,6 +34,20 @@ set(ref(db, "users/" + auth.currentUser.uid), {
   email: auth.currentUser.email,
   online: true
 });
+onValue(ref(db, "users"), snap => {
+  const userList = document.getElementById("userList");
+  userList.innerHTML = "";
+
+  snap.forEach(u => {
+    if (u.key !== auth.currentUser.uid) {
+      const d = document.createElement("div");
+      d.innerText = u.val().email;
+      d.onclick = () => openChat(u.key);
+      userList.appendChild(d);
+    }
+  });
+});
+
 /* ---------- CHAT START ---------- */
 function startChat() {
   document.getElementById("login").style.display = "none";
