@@ -1,47 +1,28 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } 
-from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
-import { getDatabase, ref, push, onChildAdded } 
-from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>WhatsApp Advanced</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-// 🔴 YAHAN APNA FIREBASE CONFIG DALO
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  databaseURL: "https://YOUR_PROJECT.firebaseio.com",
-  projectId: "YOUR_PROJECT"
-};
+<div id="login">
+  <h2>Login</h2>
+  <input id="email" placeholder="Email">
+  <input id="password" type="password">
+  <button onclick="login()">Login</button>
+  <button onclick="register()">Register</button>
+</div>
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getDatabase(app);
+<div id="chat" style="display:none">
+  <div id="messages"></div>
+  <input id="msg">
+  <button onclick="sendMsg()">Send</button>
+</div>
 
-// 🔹 global functions expose
-window.login = function(){
-  signInWithEmailAndPassword(auth, email.value, password.value)
-  .then(startChat)
-  .catch(alert);
-}
+<!-- 🔥 MOST IMPORTANT LINE -->
+<script type="module" src="./app.js"></script>
 
-window.register = function(){
-  createUserWithEmailAndPassword(auth, email.value, password.value)
-  .then(startChat)
-  .catch(alert);
-}
-
-function startChat(){
-  login.style.display="none";
-  chat.style.display="block";
-
-  const msgRef = ref(db, "messages");
-  onChildAdded(msgRef, snap=>{
-    messages.innerHTML += `<div>${snap.val().text}</div>`;
-  });
-}
-
-window.sendMsg = function(){
-  push(ref(db,"messages"), {
-    text: msg.value
-  });
-  msg.value="";
-}
+</body>
+</html>
