@@ -5,13 +5,14 @@
 // Get this from Firebase Console > Project Settings > General > Your apps
 
 export const firebaseConfig = {
-    apiKey: "AIzaSyDArQkJaFoPMQeOoHi1LQPB2Umm4LS8oK8",
-    authDomain: "to-1-chat-a9582.firebaseapp.com",
-    databaseURL: "https://to-i-chat-a9582-default-rdb.firebaseio.com",
-    projectId: "to-1-chat-a9582",
-    storageBucket: "to-1-chat-a9582.firebasestorage.app",
-    messagingSenderId: "382335872296",
-    appId: "1:382335872296:web:25d06c77d19f45688df41d"
+  apiKey: "AIzaSyDArQkJaFoPMQeOoHi1LQPB2Umm4LS8oK8",
+  authDomain: "to-1-chat-a9582.firebaseapp.com",
+  databaseURL: "https://to-1-chat-a9582-default-rtdb.firebaseio.com",
+  projectId: "to-1-chat-a9582",
+  storageBucket: "to-1-chat-a9582.firebasestorage.app",
+  messagingSenderId: "382335872296",
+  appId: "1:382335872296:web:25d06c77d19f45688df41d",
+  measurementId: "G-6SZFSRJYXN"
 };
 
 // ==================================================
