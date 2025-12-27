@@ -229,5 +229,27 @@
     <!-- Firebase SDK -->
     <script type="module" src="firebase-config.js"></script>
     <script type="module" src="app.js"></script>
+    <!-- index.html me <head> ke baad yeh add karein -->
+<script type="text/javascript">
+    console.log('Page loaded successfully');
+    
+    // Check if files are loading
+    window.addEventListener('load', function() {
+        console.log('All resources loaded');
+        
+        // Check if Firebase config file exists
+        fetch('firebase-config.js')
+            .then(response => {
+                if (response.ok) {
+                    console.log('✅ firebase-config.js file found');
+                } else {
+                    console.log('❌ firebase-config.js file NOT found');
+                }
+            })
+            .catch(error => {
+                console.log('❌ Error loading firebase-config.js:', error);
+            });
+    });
+</script>
 </body>
 </html>
