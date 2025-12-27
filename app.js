@@ -1,105 +1,39 @@
+/* ================= FIREBASE IMPORTS ================= */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import { onValue } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword }
-from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
-import { getDatabase, ref, push, onChildAdded, set, remove, onDisconnect }
-from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+import {
+  getDatabase,
+  ref,
+  push,
+  onChildAdded,
+  onValue,
+  set,
+  update,
+  onDisconnect
+} from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
 
+/* ================= FIREBASE API CONFIG ================= */
+/* 🔴 YAHI WO API HAI JISKI ERROR AA RAHI THI */
 const firebaseConfig = {
   apiKey: "AIzaSyDArQkJaFoPMQeOoHi1LQPB2Umm4LS8oK8",
   authDomain: "to-1-chat-a9582.firebaseapp.com",
   databaseURL: "https://to-1-chat-a9582-default-rtdb.firebaseio.com",
-  projectId: "to-1-chat-a9582"
+  projectId: "to-1-chat-a9582",
+  storageBucket: "to-1-chat-a9582.firebasestorage.app",
+  messagingSenderId: "382335872296",
+  appId: "1:382335872296:web:25d06c77d19f45688df41d"
 };
 
+/* ================= INIT ================= */
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-let chatId = "public"; // abhi demo ke liye
-
-/* ---------- AUTH ---------- */
-window.login = () => {
-  signInWithEmailAndPassword(auth, email.value, password.value)
-    .then(startChat)
-    .catch(e => alert(e.message));
-};
-
-window.register = () => {
-  createUserWithEmailAndPassword(auth, email.value, password.value)
-    .then(startChat)
-    .catch(e => alert(e.message));
-};
-set(ref(db, "users/" + auth.currentUser.uid), {
-  email: auth.currentUser.email,
-  online: true
-});
-onValue(ref(db, "users"), snap => {
-  const userList = document.getElementById("userList");
-  userList.innerHTML = "";
-
-  snap.forEach(u => {
-    if (u.key !== auth.currentUser.uid) {
-      const d = document.createElement("div");
-      d.innerText = u.val().email;
-      d.onclick = () => openChat(u.key);
-      userList.appendChild(d);
-    }
-  });
-});
-
-/* ---------- CHAT START ---------- */
-function getChatId(a, b) {
-  return a < b ? a + "_" + b : b + "_" + a;
-}
-
-let currentChatId = "";
-
-function openChat(otherUid) {
-  currentChatId = getChatId(auth.currentUser.uid, otherUid);
-  document.getElementById("messages").innerHTML = "";
-
-  onChildAdded(
-    ref(db, "chats/" + currentChatId + "/messages"),
-    snap => {
-      const m = snap.val();
-      addMessage({
-        text: decrypt(m.text),
-        sender: m.sender
-      });
-    }
-  );
-}
-
-function startChat() {
-  document.getElementById("login").style.display = "none";
-  document.getElementById("chat").style.display = "flex";
-
-  set(ref(db,"online/"+auth.currentUser.uid), true);
-  onDisconnect(ref(db,"online/"+auth.currentUser.uid)).remove();
-
-  onChildAdded(ref(db,"chats/"+chatId+"/messages"), snap => {
-    const m = snap.val();
-    addMessage(m);
-  });
-}
-
-/* ---------- MESSAGE UI ---------- */
-function addMessage(m) {
-  const div = document.createElement("div");
-  div.className = "msg " + (m.sender === auth.currentUser.uid ? "me" : "other");
-
-  if (m.img) {
-    const img = document.createElement("img");
-    img.src = m.img;
-    img.style.maxWidth="150px";
-    div.appendChild(img);
-  } else {
-    div.innerText = m.text;
-  }
-
-  messages.appendChild(div);
-}
+/* ================= AES ENCRYPTION ================= */
 const SECRET = "whatsapp-secret";
 
 function encrypt(text) {
@@ -107,37 +41,113 @@ function encrypt(text) {
 }
 
 function decrypt(cipher) {
-  return CryptoJS.AES.decrypt(cipher, SECRET).toString(CryptoJS.enc.Utf8);
+  return CryptoJS.AES.decrypt(cipher, SECRET)
+    .toString(CryptoJS.enc.Utf8);
 }
 
+/* ================= GLOBALS ================= */
+let currentChatId = "";
+let currentOtherUid = "";
 
-/* ---------- SEND MESSAGE ---------- */
-window.sendMsg = () => {
-  if (img.files[0]) {
-    const reader = new FileReader();
-    reader.onload = () => {
-      push(ref(db,"chats/"+chatId+"/messages"), {
-        img: reader.result,
-        sender: auth.currentUser.uid
-      });
-    };
-    reader.readAsDataURL(img.files[0]);
-  } else {
-    push(ref(db,"chats/"+chatId+"/messages"), {
-      text: msg.value,
-      sender: auth.currentUser.uid
+/* ================= AUTH ================= */
+window.login = () => {
+  signInWithEmailAndPassword(auth, email.value, password.value)
+    .then(startApp)
+    .catch(e => alert(e.message));
+};
+
+window.register = () => {
+  createUserWithEmailAndPassword(auth, email.value, password.value)
+    .then(startApp)
+    .catch(e => alert(e.message));
+};
+
+/* ================= START APP ================= */
+function startApp() {
+  document.getElementById("login").style.display = "none";
+  document.getElementById("app").style.display = "flex";
+
+  set(ref(db, "users/" + auth.currentUser.uid), {
+    email: auth.currentUser.email,
+    online: true
+  });
+
+  onDisconnect(ref(db, "users/" + auth.currentUser.uid + "/online"))
+    .set(false);
+
+  loadUsers();
+}
+
+/* ================= LOAD USERS ================= */
+function loadUsers() {
+  onValue(ref(db, "users"), snap => {
+    userList.innerHTML = "";
+    snap.forEach(u => {
+      if (u.key !== auth.currentUser.uid) {
+        const d = document.createElement("div");
+        d.innerText = u.val().email;
+        d.onclick = () => openChat(u.key, u.val().email);
+        userList.appendChild(d);
+      }
     });
-  }
-  msg.value="";
-  img.value="";
-};window.sendMsg = () => {
+  });
+}
+
+/* ================= CHAT ID ================= */
+function getChatId(a, b) {
+  return a < b ? a + "_" + b : b + "_" + a;
+}
+
+/* ================= OPEN CHAT ================= */
+function openChat(uid, email) {
+  currentOtherUid = uid;
+  currentChatId = getChatId(auth.currentUser.uid, uid);
+  chatWith.innerText = email;
+  messages.innerHTML = "";
+
+  onChildAdded(
+    ref(db, "chats/" + currentChatId + "/messages"),
+    snap => {
+      const m = snap.val();
+
+      if (m.sender !== auth.currentUser.uid) {
+        update(
+          ref(db, "chats/" + currentChatId + "/messages/" + snap.key),
+          { seen: true }
+        );
+      }
+
+      addMessage({
+        text: decrypt(m.text),
+        sender: m.sender,
+        seen: m.seen
+      });
+    }
+  );
+}
+
+/* ================= MESSAGE UI ================= */
+function addMessage(m) {
+  const d = document.createElement("div");
+  d.className = "msg " + (m.sender === auth.currentUser.uid ? "me" : "other");
+  d.innerText =
+    m.text +
+    (m.sender === auth.currentUser.uid ? (m.seen ? " ✔✔" : " ✔") : "");
+  messages.appendChild(d);
+}
+
+/* ================= SEND MESSAGE ================= */
+window.sendMsg = () => {
   if (!currentChatId) {
     alert("Select a user first");
     return;
   }
 
+  const text = msg.value.trim();
+  if (!text) return;
+
   push(ref(db, "chats/" + currentChatId + "/messages"), {
-    text: encrypt(msg.value),
+    text: encrypt(text),
     sender: auth.currentUser.uid,
     seen: false,
     time: Date.now()
@@ -146,17 +156,7 @@ window.sendMsg = () => {
   msg.value = "";
 };
 
-
-/* ---------- TYPING ---------- */
-msg.oninput = () => {
-  set(ref(db,"typing/"+chatId+"/"+auth.currentUser.uid), true);
-  setTimeout(()=>remove(ref(db,"typing/"+chatId+"/"+auth.currentUser.uid)),1000);
-};
-
-/* ---------- WEBRTC CALL ---------- */
-let pc = new RTCPeerConnection();
-window.startCall = async () => {
-  const stream = await navigator.mediaDevices.getUserMedia({video:true,audio:true});
-  localVideo.srcObject = stream;
-  stream.getTracks().forEach(t=>pc.addTrack(t,stream));
+/* ================= DARK MODE ================= */
+window.toggleDark = () => {
+  document.body.classList.toggle("dark");
 };
