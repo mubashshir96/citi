@@ -7,44 +7,39 @@
 </head>
 <body>
 
-<!-- LOGIN -->
+<button id="darkBtn" onclick="toggleDark()">🌙</button>
+
 <div id="login">
   <h2>Login</h2>
   <input id="email" placeholder="Email">
-  <input id="password" type="password">
+  <input id="password" type="password" placeholder="Password">
   <button onclick="login()">Login</button>
   <button onclick="register()">Register</button>
 </div>
-<div id="userList"></div>
-  <input id="search" placeholder="Search user">
 
-<!-- CHAT -->
-<div id="chat" style="display:none">
-  <div id="top">
-    <span id="statusText">🟢 Online</span>
-    <button onclick="startCall()">📞</button>
+<div id="app" style="display:none">
+  <div id="sidebar">
+    <input id="search" placeholder="Search user">
+    <div id="userList"></div>
   </div>
 
-  <div id="messages"></div>
+  <div id="chat">
+    <div id="top">
+      <span id="chatWith">Select user</span>
+      <span id="typing"></span>
+    </div>
 
-  <div id="typing"></div>
+    <div id="messages"></div>
 
-  <div id="inputBar">
-    <input id="msg" placeholder="Message">
-    <input type="file" id="img">
-    <button onclick="sendMsg()">Send</button>
+    <div id="inputBar">
+      <input id="msg" placeholder="Message">
+      <button onclick="sendMsg()">Send</button>
+    </div>
   </div>
 </div>
 
-<!-- CALL -->
-<video id="localVideo" autoplay muted></video>
-<video id="remoteVideo" autoplay></video>
-
-<!-- AES Encryption library -->
+<!-- AES library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-
-<!-- Your main app -->
 <script type="module" src="./app.js"></script>
-
 </body>
 </html>
