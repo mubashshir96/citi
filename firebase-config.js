@@ -11,8 +11,8 @@ export const firebaseConfig = {
   projectId: "to-1-chat-a9582",
   storageBucket: "to-1-chat-a9582.firebasestorage.app",
   messagingSenderId: "382335872296",
-  appId: "1:382335872296:web:25d06c77d19f45688df41d",
-  measurementId: "G-6SZFSRJYXN"
+  appId: "1:382335872296:web:123d69d397e08afb8df41d",
+  measurementId: "G-Z528SXSS4B"
 };
 
 // ==================================================
