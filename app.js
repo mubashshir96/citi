@@ -29,7 +29,10 @@ window.register = () => {
     .then(startChat)
     .catch(e => alert(e.message));
 };
-
+set(ref(db, "users/" + auth.currentUser.uid), {
+  email: auth.currentUser.email,
+  online: true
+});
 /* ---------- CHAT START ---------- */
 function startChat() {
   document.getElementById("login").style.display = "none";
