@@ -49,6 +49,28 @@ onValue(ref(db, "users"), snap => {
 });
 
 /* ---------- CHAT START ---------- */
+function getChatId(a, b) {
+  return a < b ? a + "_" + b : b + "_" + a;
+}
+
+let currentChatId = "";
+
+function openChat(otherUid) {
+  currentChatId = getChatId(auth.currentUser.uid, otherUid);
+  document.getElementById("messages").innerHTML = "";
+
+  onChildAdded(
+    ref(db, "chats/" + currentChatId + "/messages"),
+    snap => {
+      const m = snap.val();
+      addMessage({
+        text: decrypt(m.text),
+        sender: m.sender
+      });
+    }
+  );
+}
+
 function startChat() {
   document.getElementById("login").style.display = "none";
   document.getElementById("chat").style.display = "flex";
