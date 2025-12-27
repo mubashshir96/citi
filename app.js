@@ -12,28 +12,7 @@ import {
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import { 
     getDatabase, 
-    ref,
-    // Debug Firebase initialization
-console.log("🟡 Starting Firebase initialization...");
-console.log("Firebase Config:", firebaseConfig);
-
-// Check if databaseURL is correct
-if (!firebaseConfig.databaseURL) {
-    console.error("❌ ERROR: databaseURL missing in firebase-config.js");
-} else {
-    console.log("✅ databaseURL found:", firebaseConfig.databaseURL);
-}
-
-// Initialize Firebase
-let app;
-try {
-    app = initializeApp(firebaseConfig);
-    console.log("✅ Firebase app initialized successfully");
-} catch (error) {
-    console.error("❌ Firebase initialization failed:", error);
-    console.error("Error details:", error.message);
-    console.error("Check your firebase-config.js file");
-}
+    ref, 
     set, 
     push, 
     onValue, 
