@@ -29,11 +29,12 @@ window.register = () => {
 };
 
 function startChat() {
-  login.style.display = "none";
-  chat.style.display = "block";
+  document.getElementById("login").style.display = "none";
+  document.getElementById("chat").style.display = "block";
 
   onChildAdded(ref(db, "messages"), snap => {
-    messages.innerHTML += `<div>${snap.val().text}</div>`;
+    document.getElementById("messages").innerHTML +=
+      `<div>${snap.val().text}</div>`;
   });
 }
 
