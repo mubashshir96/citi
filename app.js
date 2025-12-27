@@ -100,6 +100,16 @@ function addMessage(m) {
 
   messages.appendChild(div);
 }
+const SECRET = "whatsapp-secret";
+
+function encrypt(text) {
+  return CryptoJS.AES.encrypt(text, SECRET).toString();
+}
+
+function decrypt(cipher) {
+  return CryptoJS.AES.decrypt(cipher, SECRET).toString(CryptoJS.enc.Utf8);
+}
+
 
 /* ---------- SEND MESSAGE ---------- */
 window.sendMsg = () => {
