@@ -1,0 +1,6 @@
+
+body{font-family:Arial;background:#ece5dd}
+#login,#chat{width:350px;margin:30px auto;background:white;padding:10px;border-radius:5px}
+#messages{height:250px;overflow:auto;border:1px solid #ccc;margin:5px 0}
+img{max-width:150px}
+video{width:150px}
